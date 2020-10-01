@@ -1,0 +1,23 @@
+# Example of Cassis script file
+
+# Step 1: the model is loaded
+load model "A320.pbc"
+
+# Step 2: the model is instantiated
+instantiate model
+print instantiated-model "instantiated-model.pbc"
+
+# Step 3: the BDD encoding the top event is built
+build BDD LossOfelectricalSystem
+
+# Step 4: the BDD encoding minimal cutsets of the top event is built.
+build ZBDD-MCS LossOfelectricalSystem
+
+# Step 5: minimal cutsets are exported into a text file.
+print products ZBDD-MCS LossOfelectricalSystem "mcsA320.txt" 
+
+# Step 6: The top-event probability is calculated for several mission time.
+compute probability BDD LossOfelectricalSystem [8760] "A320 electric system failure.txt" mode=write
+
+# Step 7: importance measures of basic are calculated and to the text file.
+#compute importance-measures LossOfelectricalSystem top MIF=True RAW=True 8760 "stats.txt" mode=append

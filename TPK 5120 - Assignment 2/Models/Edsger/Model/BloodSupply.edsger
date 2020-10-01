@@ -1,0 +1,5 @@
+# Script file
+
+load model "examples/Assignment 2/BloodSupply.net"
+instantiate model
+compute maximum-flow s t capacity "result.txt" mode=write

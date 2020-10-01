@@ -1,0 +1,79 @@
+domain Domino[1,20]
+
+problem Tiling
+	Domino D1f, D1s, D2f, D2s, D3f, D3s, D4f, D4s, D5f, D5s, D6f, D6s, D7f,D7s, D8f, D8s, D9f, D9s, D10f, D10s;
+	constraint
+		alldifferent D1f, D1s, D2f, D2s, D3f, D3s, D4f, D4s, D5f, D5s, D6f, D6s, D7f,D7s, D8f, D8s, D9f, D9s, D10f, D10s;
+
+		D1f - D1s < 4; 
+		D1f - D1s > -4;
+		D1f - D1s != 3;
+		D1f - D1s != -3;
+		D1f - D1s != 2;
+		D1f - D1s != -2;
+		
+		D2f - D2s < 4; 
+		D2f - D2s > -4;
+		D2f - D2s != 3;
+		D2f - D2s != -3;
+		D2f - D2s != 2;
+		D2f - D2s != -2;
+		
+		D3f - D3s < 4; 
+		D3f - D3s > -4;
+		D3f - D3s != 3;
+		D3f - D3s != -3;
+		D3f - D3s != 2;
+		D3f - D3s != -2;
+		
+		D4f - D4s < 4; 
+		D4f - D4s > -4;
+		D4f - D4s != 3;
+		D4f - D4s != -3;
+		D4f - D4s != 2;
+		D4f - D4s != -2;
+		
+		D5f - D5s < 4; 
+		D5f - D5s > -4;
+		D5f - D5s != 3;
+		D5f - D5s != -3;
+		D5f - D5s != 2;
+		D5f - D5s != -2;
+		
+		D6f - D6s < 4; 
+		D6f - D6s > -4;
+		D6f - D6s != 3;
+		D6f - D6s != -3;
+		D6f - D6s != 2;
+		D6f - D6s != -2;
+		
+		D7f - D7s < 4; 
+		D7f - D7s > -4;
+		D7f - D7s != 3;
+		D7f - D7s != -3;
+		D7f - D7s != 2;
+		D7f - D7s != -2;
+		
+		D8f - D8s < 4; 
+		D8f - D8s > -4;
+		D8f - D8s != 3;
+		D8f - D8s != -3;
+		D8f - D8s != 2;
+		D8f - D8s != -2;
+		
+		D9f - D9s < 4; 
+		D9f - D9s > -4;
+		D9f - D9s != 3;
+		D9f - D9s != -3;
+		D9f - D9s != 2;
+		D9f - D9s != -2;
+
+		
+		D10f - D10s < 4; 
+		D10f - D10s > -4;
+		D10f - D10s != 3;
+		D10f - D10s != -3;
+		D10f - D10s != 2;
+		D10f - D10s != -2;
+		
+end			

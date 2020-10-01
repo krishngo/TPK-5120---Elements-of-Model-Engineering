@@ -1,0 +1,19 @@
+domain Domino[1,6]
+
+problem Tiling
+	Domino D0f, D0s, D1f, D1s, D2f, D2s;
+	constraint
+		alldifferent D0f, D0s, D1f, D1s, D2f, D2s;
+		
+		D0f - D0s <= 2; 
+		D0f - D0s >= -2;
+
+		
+		D1f - D1s <= 2; 
+		D1f - D1s >= -2;
+
+		
+		D2f - D2s <= 2; 
+		D2f - D2s >= -2;
+
+end			

@@ -1,0 +1,74 @@
+class Generator
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 7e-6;
+end
+
+class Transformer
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 1e-6;
+end
+
+class Inverter
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 1e-6;
+end
+
+class Battery
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 1e-5;
+end
+
+class Busbar
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 1e-9;
+end
+
+class CircuitBreaker
+	state FailOnDemand = (exponential FailOnDemandProbability);
+	state FailInOperation = (exponential FailInOperationProbability);
+	parameter FailOnDemandProbability = 3e-9;
+	parameter FailInOperationProbability = 5e-9;
+end
+
+block Main
+	Generator Gen1;
+	Generator Gen2;
+	Generator APU;
+	Transformer TR1;
+	Transformer TR2;
+	Transformer TRess;
+	Inverter StatInv;
+	Battery Bat1;
+	Battery Bat2;
+	Busbar AC1;
+	Busbar AC2;
+	Busbar DC1;
+	Busbar DC2;
+	Busbar ACess;
+	Busbar DCess;
+	Busbar BatBus;
+	CircuitBreaker CBs;
+	port DCBusbarLoss = (and DC1.failed DC2.failed);
+	port TransformerLoss = (and TR1.failed TR2.failed);
+	port LossOfPowerACess = (or StatInv.failed ACess.failed TRess.failed);
+	port LossOfGen1DCLine = (or Gen1.failed AC1.failed TR1.failed DC1.failed BatBus.failed);
+	port LossofGen2DCLine = (or Gen2.failed AC1.failed TR1.failed DC1.failed BatBus.failed);
+	port LossofAPUDC = (or APU.failed TransformerLoss DCBusbarLoss BatBus.failed);
+	port LossofBat1DC = (and BatBus.failed LossOfPowerACess); // remove this line
+	port DCessFail = (and LossOfGen1DCLine LossofGen2DCLine LossofAPUDC Bat2.failed LossofBat1DC); // replace LossofBat1DC with LossOfPowerACess to remove modification
+	
+	port ACBusbarLoss = (and AC1.failed AC2.failed);
+	port LossOfGen1ACLine = (or Gen1.failed AC1.failed);
+	port LossOfGen2ACLine = (or Gen2.failed AC2.failed);
+	port LossofAPUAC = (or APU.failed ACBusbarLoss);
+	port LossofBat1AC = (or Bat1.failed StatInv.failed);
+	port LossofBat2AC = (or Bat2.failed StatInv.failed BatBus.failed);
+	port ACessFail = (and LossOfGen1ACLine LossOfGen2ACLine LossofAPUAC LossofBat1AC LossofBat2AC);
+
+
+	port CircuitBreakerfail = (or CBs.FailOnDemand CBs.FailInOperation);
+
+	port LossOfelectricalSystem = (or DCessFail ACessFail CircuitBreakerfail);
+end
+		
+	

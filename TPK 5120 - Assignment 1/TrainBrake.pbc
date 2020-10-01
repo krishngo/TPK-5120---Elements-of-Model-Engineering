@@ -1,0 +1,54 @@
+class Solenoid
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 0.105;
+end
+
+class AirReservoir
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 0.004;
+end
+
+class ElectricCircuit
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 0.0034;
+end
+
+class ElectricCircuitControl
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 0.003;
+end
+
+class AirGenerator
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 0.0034;
+end
+
+class Wire
+	state failed = (exponential failureProbability);
+	parameter failureProbability = 0.03;
+end
+
+class Bogie
+	Solenoid S1;
+	Solenoid S2;
+	AirReservoir A;
+	ElectricCircuit EC;
+	port falseBraking = (or A.failed EC.failed);
+	port loseBraking = (and S1.failed S2.failed);
+end
+
+block Main
+	Bogie B1;
+	Bogie B2;
+	Wire W;
+	AirGenerator AG;
+	ElectricCircuitControl ECC;
+	port FalseBraking = (or B1.falseBraking B2.falseBraking AG.failed W.failed (or ECC.failed B1.falseBraking B2.falseBraking));
+	port LoseBraking = (and B1.loseBraking B2.loseBraking);
+end
+	
+
+
+
+	
+	

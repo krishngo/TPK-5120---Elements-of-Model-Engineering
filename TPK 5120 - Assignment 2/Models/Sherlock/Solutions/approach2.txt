@@ -1,0 +1,21 @@
+problem Wiring
+	C12 {0}
+	C13 {0}
+	C14 {1}
+	C15 {0}
+	C16 {1}
+	C23 {0}
+	C24 {0}
+	C25 {0}
+	C26 {1}
+	C34 {1}
+	C35 {0}
+	C36 {0}
+	C45 {0}
+	C46 {0}
+	C56 {1}
+end
+1 solution(s)
+836 choice(s)
+Execution time: 1.4 second(s)
+Best score: 176

@@ -1,0 +1,21 @@
+block Transfusion
+	node s, sA, sB, sO, sAB, tA, tB, tO, tAB, t;
+	edge
+		e1(capacity = 46): s -> sA;
+		e2(capacity = 34): s -> sB;
+		e3(capacity = 45): s -> sO;
+		e4(capacity = 45): s -> sAB;
+		e5(capacity=46): sA -> tA;
+		e6(capacity=46): sA -> tAB;
+		e7(capacity=34): sB -> tB;
+		e8(capacity=34): sB -> tAB;
+		e9(capacity=45): sO -> tA;
+		e10(capacity=45): sO -> tB; //swap positions to see the change in the shortage
+		e11(capacity=45): sO -> tO;
+		e12(capacity=45): sO -> tAB;
+		e13(capacity=45): sAB -> tAB;
+		e14(capacity = 39): tA -> t;
+		e15(capacity = 38): tB -> t;
+		e16(capacity = 42): tO -> t;
+		e17(capacity = 50): tAB -> t;
+end

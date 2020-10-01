@@ -1,0 +1,25 @@
+problem Tiling
+	D10f {19}
+	D10s {20}
+	D1f {1}
+	D1s {2}
+	D2f {3}
+	D2s {4}
+	D3f {5}
+	D3s {6}
+	D4f {7}
+	D4s {8}
+	D5f {9}
+	D5s {10}
+	D6f {11}
+	D6s {12}
+	D7f {13}
+	D7s {14}
+	D8f {15}
+	D8s {16}
+	D9f {17}
+	D9s {18}
+end
+1 solution(s)
+10 choice(s)
+Execution time: 0.031 second(s)

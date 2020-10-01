@@ -1,0 +1,16 @@
+# Script file
+
+# Loading of the model
+load model "A320.dfe"
+#print model "model.dfe"
+
+# Instantiation of the model
+instantiate model
+#print instantiated-model "instantiated-model.dfe"
+
+# Parameters of the calculation
+set number-of-tries 0
+
+# Calculation
+compute observers Main output="result.csv" mode=write
+

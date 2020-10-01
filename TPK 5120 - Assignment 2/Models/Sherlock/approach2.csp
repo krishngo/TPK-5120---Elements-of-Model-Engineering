@@ -1,0 +1,21 @@
+domain Connection[0,1]
+
+problem Wiring
+	Connection C12, C13, C14, C15, C16;
+	Connection C23, C24, C25, C26;
+	Connection  C34, C35, C36;
+	Connection C45, C46;
+	Connection C56;
+	constraint
+		C12 + C13 + C14 + C15 + C16 >= 1;
+		C12 + C23 + C24 + C25 + C26 >= 1;
+		C13 + C23 + C34 + C35 + C36 >= 1;
+		C14 + C24 + C34 + C45 + C46 >= 1;
+		C15 + C25 + C35 + C45 + C56 >= 1;
+		C16 + C26 + C36 + C46 + C56 >= 1;		
+        
+        C12 + C13 + C14 + C15 + C16 + C23 + C24 + C25 + C26 + C34 + C35 + C36 + C45 + C46 + C56 >= 5;
+        
+	minimize
+		67*C12 + 52*C13 + 28*C14 + 56*C15 + 36*C16 +57*C23 + 73*C24 + 51*C25 + 32*C26 +34*C34 + 84*C35 + 40*C36 +80*C45 + 44*C46 +46*C56;
+end

@@ -1,0 +1,34 @@
+# Example of Cassis script file
+
+# Step 1: the model is loaded
+load model "TrainBrake.pbc"
+
+# Step 2: the model is instantiated
+instantiate model
+print instantiated-model "instantiated-model.pbc"
+
+# Step 3: the BDD encoding the top event is built
+build BDD FalseBraking
+build BDD LoseBraking
+
+
+# Step 4: the BDD encoding minimal cutsets of the top event is built.
+build ZBDD-MCS FalseBraking
+build ZBDD-MCS LoseBraking
+
+
+# Step 5: minimal cutsets are exported into a text file.
+print products ZBDD-MCS FalseBraking probability=True contribution=True mission-time=1 "mcs for False Braking.txt"
+print products ZBDD-MCS LoseBraking probability=True mission-time=1 "mcs for losing braking capacity.txt"  
+
+
+# Step 6: The top-event probability is calculated for several mission time.
+compute probability BDD FalseBraking [1] "stats for False braking.txt" mode=write
+compute probability BDD LoseBraking [1] "stats for lose of breaking capacity.txt" mode=write
+
+# Step 7: importance measures of basic are calculated and to the text file.
+#compute importance-measures BDD FalseBraking CIF=True RRW=True 12 "stats.txt" mode=append
+#compute importance-measures BDD LoseBraking CIF=True RRW=True 12 "stats1.txt" mode=append
+
+
+ 

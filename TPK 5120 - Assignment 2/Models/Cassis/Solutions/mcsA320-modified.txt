@@ -1,0 +1,20 @@
+Variable	LossOfelectricalSystem
+Handle	ZBDD-MCS
+Product
+Gen1.failed	BatBus.failed	Gen2.failed	APU.failed	Bat1.failed
+Gen1.failed	BatBus.failed	APU.failed	AC2.failed	Bat1.failed
+Gen1.failed	Gen2.failed	APU.failed	Bat2.failed	Bat1.failed
+Gen1.failed	Gen2.failed	APU.failed	StatInv.failed
+Gen1.failed	APU.failed	Bat2.failed	AC2.failed	Bat1.failed
+Gen1.failed	APU.failed	StatInv.failed	AC2.failed
+AC1.failed	BatBus.failed	Gen2.failed	APU.failed	Bat1.failed
+AC1.failed	BatBus.failed	AC2.failed	Bat1.failed
+AC1.failed	Gen2.failed	APU.failed	Bat2.failed	Bat1.failed
+AC1.failed	Gen2.failed	APU.failed	StatInv.failed
+AC1.failed	Bat2.failed	AC2.failed	Bat1.failed
+AC1.failed	StatInv.failed	AC2.failed
+BatBus.failed	Bat2.failed	StatInv.failed
+BatBus.failed	Bat2.failed	ACess.failed
+BatBus.failed	Bat2.failed	TRess.failed
+CBs.FailOnDemand
+CBs.FailInOperation

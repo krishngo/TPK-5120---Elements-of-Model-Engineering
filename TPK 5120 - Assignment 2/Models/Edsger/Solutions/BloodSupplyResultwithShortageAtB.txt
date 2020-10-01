@@ -1,0 +1,33 @@
+Model	Transfusion
+source	s
+target	t
+node	flow
+s	168.0
+sA	46.0
+sB	34.0
+sO	45.0
+sAB	43.0
+tA	39.0
+tB	37.0
+tO	42.0
+tAB	50.0
+t	168.0
+edge	source	target	capacity	flow
+e1	s	sA	46.0	46.0
+e2	s	sB	34.0	34.0
+e3	s	sO	45.0	45.0
+e4	s	sAB	45.0	43.0
+e5	sA	tA	46.0	39.0
+e6	sA	tAB	46.0	7.0
+e7	sB	tB	34.0	34.0
+e8	sB	tAB	34.0	0.0
+e9	sO	tA	45.0	0.0
+e11	sO	tO	45.0	42.0
+e10	sO	tB	45.0	3.0
+e12	sO	tAB	45.0	0.0
+e13	sAB	tAB	45.0	43.0
+e14	tA	t	39.0	39.0
+e15	tB	t	38.0	37.0
+e16	tO	t	42.0	42.0
+e17	tAB	t	50.0	50.0
+

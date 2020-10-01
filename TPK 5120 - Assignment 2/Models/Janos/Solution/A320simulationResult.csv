@@ -1,0 +1,54 @@
+Model	Main
+Observer	AC1_Powered
+	Mission-time	0.0
+			Value
+			0.0
+Observer	AC2_Powered
+	Mission-time	0.0
+			Value
+			0.0
+Observer	AC1_ShortCircuit
+	Mission-time	0.0
+			Value
+			0.0
+Observer	AC2_ShortCircuit
+	Mission-time	0.0
+			Value
+			0.0
+Observer	misc
+	Mission-time	0.0
+			Value
+			1.0
+Observer	DC1_Powered
+	Mission-time	0.0
+			Value
+			0.0
+Observer	DC2_Powered
+	Mission-time	0.0
+			Value
+			0.0
+Observer	ACess_ShortCircuit
+	Mission-time	0.0
+			Value
+			0.0
+Observer	DCbatteryBus_Powered
+	Mission-time	0.0
+			Value
+			0.0
+Observer	DCbatteryBus_ShortCircuit
+	Mission-time	0.0
+			Value
+			0.0
+Observer	ACess_Powered
+	Mission-time	0.0
+			Value
+			1.0
+Observer	DCess_Powered
+	Mission-time	0.0
+			Value
+			1.0
+Observer	DCess_ShortCircuit
+	Mission-time	0.0
+			Value
+			0.0
+

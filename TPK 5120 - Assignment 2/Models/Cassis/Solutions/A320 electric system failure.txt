@@ -1,0 +1,5 @@
+Variable	LossOfelectricalSystem
+Handle	BDD
+mission-time	probability
+8.7600e+03	7.4392e-05
+

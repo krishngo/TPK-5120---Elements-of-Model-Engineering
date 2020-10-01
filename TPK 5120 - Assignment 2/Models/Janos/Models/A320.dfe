@@ -1,0 +1,295 @@
+domain State {RUNNING, FAILED, STANDBY}
+
+class CircuitElement
+	Boolean in, out;
+	Boolean failed, running;
+	State state;
+	assertion
+		failed := (eq state FAILED);
+		running := (eq state RUNNING);
+		out := (and in running);
+end
+
+class CircuitBreaker
+	extends CircuitElement;
+	Boolean closed;
+	assertion
+		out := (and in closed running);
+end
+
+class SpecialCircuitBreaker
+	Boolean leftIn, leftOut, rightIn, rightOut;
+	Boolean failed, running;
+	Boolean closed;
+	State state;
+	assertion
+		failed := (eq state FAILED);
+		running := (eq state RUNNING);
+		leftOut := (and rightIn closed running);
+		rightOut := (and leftIn closed running);
+end	
+	
+class Generator
+	extends CircuitElement;
+	assertion
+		in := true;
+end
+
+class Transformer
+	extends CircuitElement;
+end
+
+class Battery
+	extends CircuitElement;
+	assertion
+		out := (eq state RUNNING);
+end
+
+class Busbar
+	Boolean in, out;
+	assertion
+		out := in;
+end
+
+class BatteryBusbar
+	Boolean leftIn, leftOut, rightIn, rightOut;
+	assertion
+		rightOut := leftIn;
+		leftOut := rightIn;
+end	
+
+block Main
+	block Generator1
+		Generator Gen;
+		CircuitBreaker CB;
+		Boolean failed;
+		assertion
+			CB.in := Gen.out;
+	end
+	clones Generator1 as Generator2;
+	block APUGenerator
+		Generator APU;
+		CircuitBreaker CB2;
+		CircuitBreaker CB4;
+		CircuitBreaker CB5;
+		Boolean failed;
+		assertion
+			CB2.in := APU.out;
+			CB4.in := CB2.out;
+			CB5.in := CB2.out;
+	end
+	block ACprimary1
+		Boolean in;
+		Busbar AC;
+		Transformer TR;
+		CircuitBreaker CB;
+		assertion
+			AC.in := in;
+			TR.in:= AC.out;
+			CB.in := AC.out;
+	end
+	clones ACprimary1 as ACprimary2;
+	block DCprimary1
+		Boolean in;
+		Busbar DC;
+		CircuitBreaker CB8;
+		CircuitBreaker CB19;
+		assertion
+			CB8.in := in;
+			DC.in := CB8.out;
+			CB19.in := DC.out;
+	end
+	clones DCprimary1 as DCprimary2;
+
+	block ACessential
+		Boolean in1, in2;
+		Busbar ACess;
+		CircuitBreaker CB9;
+		CircuitBreaker CB10;
+		CircuitBreaker CB13;
+		Transformer StatInv;
+		assertion
+			CB13.in := in2;
+			StatInv.in := CB13.out;
+			CB9.in := StatInv.out;
+			ACess.in := (or in1 CB9.out);
+			CB10.in := ACess.out;
+	end
+	block DCessential
+		Boolean in1, in2;
+		Busbar DCess;
+		Transformer TRess;
+		CircuitBreaker CB12;
+		assertion
+			TRess.in := in2;
+			CB12.in := TRess.out;
+			DCess.in:= (or in1 CB12.out);
+	end
+	block DCbatteryBus
+		Boolean in1, in2;
+		BatteryBusbar DCbatBus;
+		CircuitBreaker CB16;
+		SpecialCircuitBreaker CB17;
+		CircuitBreaker CB18;
+		assertion
+			DCbatBus.leftIn := in1;
+			CB16.in := DCbatBus.rightOut;
+			CB17.leftIn := DCbatBus.rightOut;
+			CB17.rightIn := in2;
+			DCbatBus.rightIn := CB17.leftOut;
+			CB18.in := (or DCbatBus.leftOut DCbatBus.rightOut);
+	end
+	block Battery1
+		Boolean in;
+		Battery Bat1;
+		SpecialCircuitBreaker CB20;
+		Boolean failed;
+		assertion
+			CB20.rightIn := in;
+			Bat1.in := CB20.leftOut;
+			CB20.leftIn := Bat1.out;
+	end
+	block Battery2
+		Boolean in;
+		Battery Bat2;
+		CircuitBreaker CB14;
+		Boolean failed;
+		assertion
+			Bat2.in := in;
+			CB14.in := Bat2.out;
+	end
+
+	Boolean ACessentialP;
+	Boolean BatteryBusP;
+	Boolean Misc;
+	Boolean AllGenFail;
+	Boolean AllTRFail;
+
+	assertion
+		ACprimary1.in := (or Generator1.CB.out Generator2.CB.out APUGenerator.CB4.out);
+		ACprimary2.in := (or Generator2.CB.out Generator1.CB.out APUGenerator.CB5.out);
+		DCprimary1.in := ACprimary1.TR.out;
+		DCprimary2.in := ACprimary2.TR.out;
+		DCbatteryBus.in1 := (or DCprimary1.CB19.out DCprimary2.CB19.out); 
+		DCbatteryBus.in2 := Battery2.Bat2.out;
+		Battery1.in := DCbatteryBus.CB18.out;
+		Battery2.in := DCbatteryBus.CB17.rightOut;
+		ACessential.in1 := (or ACprimary1.CB.out ACprimary2.CB.out); 
+		ACessential.in2 := (or Battery1.CB20.rightOut DCbatteryBus.CB18.out);
+		DCessential.in1 := (or DCbatteryBus.CB16.out Battery2.CB14.out);
+		DCessential.in2 := ACessential.CB10.out;
+		ACessentialP := (or ACessential.in1 ACessential.in2);
+		BatteryBusP := (or DCbatteryBus.DCbatBus.leftIn DCbatteryBus.DCbatBus.rightIn) ;
+		
+		
+		Generator1.failed := false; // alter generator 1 state here
+		Generator1.Gen.state := (if Generator1.failed FAILED RUNNING);
+		Generator1.CB.state := RUNNING;
+		Generator1.CB.closed := true;
+		
+		Generator2.failed := false; // alter Generator 2 state here
+		Generator2.Gen.state := (if Generator2.failed FAILED RUNNING);
+		Generator2.CB.state := RUNNING;
+		Generator2.CB.closed := true;
+
+		APUGenerator.failed := false; // alter APU Generator state here
+		APUGenerator.APU.state := (if APUGenerator.failed FAILED (if (and Generator1.failed Generator2.failed) RUNNING STANDBY));
+		APUGenerator.CB2.closed := (if APUGenerator.APU.running true false);
+		APUGenerator.CB2.state := RUNNING;
+		APUGenerator.CB4.closed := (if Generator1.failed true false);
+		APUGenerator.CB4.state := RUNNING;
+		APUGenerator.CB5.closed := (if Generator2.failed true false);
+		APUGenerator.CB5.state := RUNNING;
+
+		Battery1.failed := false; // alter Battery 1 state here
+		Battery1.Bat1.state := (if Battery1.failed FAILED (if (and Generator1.failed Generator2.failed APUGenerator.failed) RUNNING STANDBY));
+		Battery1.CB20.closed := true;
+		Battery1.CB20.state := RUNNING;
+		
+		Battery2.failed := false; // alter Battery 2 state here
+		Battery2.Bat2.state := (if Battery2.failed FAILED (if (or AllGenFail AllTRFail) RUNNING STANDBY));
+		Battery2.CB14.closed := true;
+		Battery2.CB14.state := RUNNING;
+		
+		ACprimary1.TR.state := RUNNING; // alter TR1 state here
+		ACprimary1.CB.closed := (if ACprimary1.in true false);
+		ACprimary1.CB.state := RUNNING;
+		
+		ACprimary2.TR.state := RUNNING; // alter TR2 state here
+		ACprimary2.CB.closed := (if ACprimary1.in false true);
+		ACprimary2.CB.state := RUNNING;
+		
+		DCprimary1.CB8.closed := (if (and Generator1.failed Generator2.failed APUGenerator.failed) false true);
+		DCprimary1.CB8.state := RUNNING;
+		DCprimary1.CB19.closed := (if DCprimary1.DC.out  true false);
+		DCprimary1.CB19.state := RUNNING;
+		
+		DCprimary2.CB8.closed := true;
+		DCprimary2.CB8.state := RUNNING;
+		DCprimary2.CB19.closed := (if DCprimary1.DC.out  false true);
+		DCprimary2.CB19.state := RUNNING;
+
+		
+		ACessential.CB13.closed := (if(and Generator1.failed Generator2.failed APUGenerator.failed) true false);
+		ACessential.CB13.state := RUNNING;
+		ACessential.CB9.closed := true;
+		ACessential.CB9.state := RUNNING;
+		ACessential.CB10.closed := (if (or (and AllGenFail Battery2.failed) (and ACprimary1.TR.failed ACprimary2.TR.failed)) true false);
+		ACessential.CB10.state := RUNNING;
+		ACessential.StatInv.state := RUNNING;
+		
+		DCbatteryBus.CB16.closed := true;
+		DCbatteryBus.CB16.state := RUNNING;
+		DCbatteryBus.CB17.closed := (if(or AllTRFail (and Generator1.failed Generator2.failed APUGenerator.failed (not Battery1.failed) (not Battery2.failed))) false true);
+		DCbatteryBus.CB17.state := RUNNING;
+		DCbatteryBus.CB18.closed := (if (and Generator1.failed Generator2.failed APUGenerator.failed (not Battery1.failed) (not Battery2.failed) ) false true);
+		DCbatteryBus.CB18.state := RUNNING;
+		
+		DCessential.TRess.state := FAILED; //Alter TR ess state here
+		DCessential.CB12.closed := (if (or (and AllGenFail Battery2.failed) (and ACprimary1.TR.failed ACprimary2.TR.failed)) true false);
+		DCessential.CB12.state := RUNNING;	
+		
+		AllTRFail := (and ACprimary1.TR.failed ACprimary2.TR.failed DCessential.TRess.failed);
+		AllGenFail:= (and Generator1.failed Generator2.failed APUGenerator.failed);
+
+		Misc := Battery2.CB14.out;
+		
+	observer Boolean misc = Misc;
+	
+	observer Boolean AC1_Powered = ACprimary1.in;
+	observer Boolean AC2_Powered = ACprimary2.in;
+	observer Boolean DC1_Powered = DCprimary1.in;
+	observer Boolean DC2_Powered = DCprimary2.in;
+	observer Boolean ACess_Powered = ACessential.ACess.in;
+	observer Boolean DCess_Powered = DCessential.DCess.in;
+	observer Boolean DCbatteryBus_Powered = BatteryBusP;
+	
+	observer Boolean AC1_ShortCircuit = (gt (count ACprimary1.in) 1);
+	observer Boolean AC2_ShortCircuit = (gt (count ACprimary2.in ) 1);
+	observer Boolean ACess_ShortCircuit = (gt (count DCprimary1.in ) 1);
+	observer Boolean DCess_ShortCircuit = (gt (count DCessential.DCess.in) 1);
+	observer Boolean DCbatteryBus_ShortCircuit = (gt (count BatteryBusP) 1);	
+end
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+	
+			
+	
+
+
+
